@@ -53,28 +53,27 @@ def read_docx(file):
 
 def get_dict(answer):
     try:
-        dict_string = re.search(r'\{.*\}', answer).group()
+        dict_string = re.search(r'{.*}', answer).group()
 
-        # Now 'dict_string' should be a string that looks like a dictionary.
-        # You can use the json.loads function to convert it to an actual dictionary:
-        dict_from_user = json.loads(dict_string)
+        # Convert the dictionary string to a Python dictionary
+        dict_from_user = ast.literal_eval(dict_string)
     except:
-        # Find string representation of dictionary using regular expression
         dict_from_user = re.search('```(.*?)```', answer, re.DOTALL).group(1).strip()
-        # Replace single quotes with double quotes to prepare string for json.loads
         dict_from_user = dict_from_user.replace("'", '"')
 
     return dict_from_user
 
 def get_data_keys(dict, doc, model="gpt-3.5-turbo"):
-    messages.append({"role": "system", "content": "You are a helpful assistant who is extreme good at searching for information in a file and returning it very need and constant in a dict that is provided to you."})
-    messages.append({"role": "user", "content": f"Given the following dict: {dict}, please analyze the provided resume and populate the keys with the relevant information found. If no information is found for a key, leave the value as None. If multiple pieces of information correspond to a single key, please collate these into a list. Only look for the keys in the dict and dont add anything. Upon completion, please return the dict with the same keys and the values you added. {doc}"})
+    messages.append({"role": "system", "content": "You are a helpful assistant who is extreme good at searching for information in a file and returning it."})
+    messages.append({"role": "user", "content": f"Please find the keys from this dict: {dict} in the following resume {doc} and return the values that you find as values in a dict. If no information is found for a key, leave the value as None. If multiple pieces of information correspond to a single key, please collate these into a list. Only look for the keys in the dict and dont add anything. Upon completion, please return the dict with the same keys and the values you added. Always return it in a dict with curly brackets"})
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
-        temperature=0.1,
+        temperature=0.0,
     )
     answer = response.choices[0].message["content"]
+    print(answer)
+    print('sotp')
     return answer
 
 def read_pdf(file):
@@ -117,10 +116,8 @@ for i in range(st.session_state.textbox_count):
     data_keys.update({text: None})
 
 if st.button('Submit'):
-    print(text_input)
     for resume in text_input.values():
         answer = get_data_keys(data_keys, resume)
-        print(answer)
         dict_from_user = get_dict(answer)
         update_data_keys.append(dict_from_user)
     st.write(update_data_keys)
