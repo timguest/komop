@@ -66,30 +66,37 @@ def generate_schedule(players_df):
     return schedule
 
 
-@app.route('/update-score', methods=['POST'])
+@app.route('/update_score', methods=['POST'])
 def update_score():
+    week_number = int(request.form.get('week_number'))
     for i, week_schedule in enumerate(schedule):
-        for j, match in enumerate(week_schedule[1]):  # here we access the actual match schedule using week_schedule[1]
-            home_score = int(request.form.get('score_home_'+str(i)+'_'+str(j), 0))
-            away_score = int(request.form.get('score_away_'+str(i)+'_'+str(j), 0))
+        if i == week_number:
+            for j, match in enumerate(week_schedule[1]):
+                home_score = int(request.form.get('score_home_' + str(i) + '_' + str(j), 0))
+                away_score = int(request.form.get('score_away_' + str(i) + '_' + str(j), 0))
 
-            if home_score is not None and away_score is not None:
+                # Store scores in the match
+                match.append((home_score, away_score))
 
-                home_player = match[0]
-                away_player = match[1]
+                if home_score is not None and away_score is not None:
+                    home_player = match[0]
+                    away_player = match[1]
 
-                if home_score > away_score:
-                    update_standings(home_player, 3)
-                elif home_score < away_score:
-                    update_standings(away_player, 3)
-                else:
-                    update_standings(home_player, 1)
-                    update_standings(away_player, 1)
+                    if home_score > away_score:
+                        update_standings(home_player, 3)
+                    elif home_score < away_score:
+                        update_standings(away_player, 3)
+                    else:
+                        update_standings(home_player, 1)
+                        update_standings(away_player, 1)
+            # Stop the loop after the correct week has been found
+            break
 
     # sort standings by score
     standings.sort(key=lambda x: x['score'], reverse=True)
 
     return render_template('competition.html', schedule=schedule, standings=standings)
+
 
 
 

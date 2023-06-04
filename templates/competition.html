@@ -13,68 +13,80 @@
 <div class="container py-5">
     <div class="row">
         <div class="col-md-8">
-            <!-- Loop for schedule starts here -->
-            {% for week_num in range(schedule|length) %}
-            <!-- A new form for each week -->
-            <form action="{{ url_for('update_score') }}" method="POST">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Week</th>
-                        <th>Player Home</th>
-                        <th>Player Away</th>
-                        <th>Score Home</th>
-                        <th>Score Away</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+            <div class="card mb-4 shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-success">Competition Schedule</h2>
+                    <!-- Schedule Table Starts Here -->
+                    <!-- Loop for schedule starts here -->
+                    {% for week_number, week_schedule in schedule %}
+                    <form action="{{ url_for('update_score') }}" method="POST">
+                        <!-- Hidden field for the week number -->
+                        <input type="hidden" name="week_number" value="{{ week_number }}">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Week</th>
+                                <th>Player Home</th>
+                                <th>Player Away</th>
+                                <th>Score Home</th>
+                                <th>Score Away</th>
+                            </tr>
+                            </thead>
+                            <tbody>
 
-                    <!-- Loop for matches in the week -->
-                    {% for match in schedule[week_num] %}
-                    <tr>
-                        <td>{{ week_num + 1 }}</td> <!-- Week number -->
-                        <td>{{ match[0][0] }}</td> <!-- Player home -->
-                        <td>{{ match[0][1] }}</td> <!-- Player away -->
-                        <td><input type="text" class="form-control" placeholder="Score"
-                                   name="score_home_{{ week_num }}_{{ loop.index0 }}"></td>
-                        <td><input type="text" class="form-control" placeholder="Score"
-                                   name="score_away_{{ week_num }}_{{ loop.index0 }}"></td>
-                    </tr>
+                            <!-- Loop for matches in the week -->
+                            {% for match in week_schedule %}
+                            <tr>
+                                <td>{{ week_number }}</td> <!-- Week number -->
+                                <td>{{ match[0] }}</td> <!-- Player home -->
+                                <td>{{ match[1] }}</td> <!-- Player away -->
+                                <td><input type="number" min="0" class="form-control" placeholder="Score"
+                                           name="score_home_{{ week_number }}_{{ loop.index0 }}"
+                                           value="{{ match[2][0] if match[2] else '' }}"></td>
+                                <td><input type="number" min="0" class="form-control" placeholder="Score"
+                                           name="score_away_{{ week_number }}_{{ loop.index0 }}"
+                                           value="{{ match[2][1] if match[2] else '' }}"></td>
+
+                            </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <button class="btn btn-primary mt-2" type="submit">Update Score</button>
+                    </form>
+                    <hr> <!-- A separator line between weeks -->
                     {% endfor %}
-
-                    </tbody>
-                </table>
-                <button class="btn btn-primary mt-2" type="submit">Update Score</button>
-            </form>
-            <hr> <!-- A separator line between weeks -->
-
-            {% endfor %}
-            <!-- Loop for schedule ends here -->
+                    <!-- Loop for schedule ends here -->
+                    <!-- Schedule Table Ends Here -->
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
             <div class="card mb-4 shadow">
                 <div class="card-body">
-                    <h2 class="card-title text-success">Competition Standings</h2>
-                    <table class="table table-striped">
+                    <h2 class="card-title text-success">Current Standings</h2>
+                    <!-- Standings Table Starts Here -->
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Player</th>
                             <th>Handicap</th>
-                            <th>Points</th>
+                            <th>Score</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <!-- Loop for player standings starts here -->
+                        <!-- Loop for standings starts here -->
                         {% for player in standings %}
                         <tr>
-                            <td>{{ player.name }}</td>
-                            <td>{{ player.handicap }}</td>
-                            <td>{{ player.score }}</td>
+                            <td>{{ player['name'] }}</td>
+                            <td>{{ player['handicap'] }}</td>
+                            <td>{{ player['score'] }}</td>
                         </tr>
                         {% endfor %}
-                        <!-- Loop for player standings ends here -->
+                        <!-- Loop for standings ends here -->
                         </tbody>
                     </table>
+                    <!-- Standings Table Ends Here -->
                 </div>
             </div>
         </div>
