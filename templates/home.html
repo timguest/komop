@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+<header class="bg-success text-white p-4 mb-5">
+    <div class="container d-flex align-items-center">
+        <h1 class="mb-0">Golf Tournament</h1>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow">
+                <div class="card-body">
+                    <h2 class="card-title">Add Player</h2>
+                    <form id="player-form" method="post">
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="handicap">Handicap:</label>
+                            <input type="number" class="form-control" id="handicap" name="handicap" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="btn btn-success btn-block mt-4" type="submit" value="Submit">
+                        </div>
+                        <div class="form-group">
+                            <a class="btn btn-primary btn-block mt-2" href="/generate-competition"
+                               style="background-color: #FFA500; border-color: #FFA500;">Generate Competition</a>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card mb-4 shadow">
+                <div class="card-body">
+                    <h2 class="card-title">Player Standings</h2>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Handicap</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for player in players %}
+                        <tr>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.handicap }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
