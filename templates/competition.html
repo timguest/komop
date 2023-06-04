@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="bg-success text-white py-3 mb-5">
+    <div class="container d-flex justify-content-center">
+        <h1 class="mb-0">Golf Tournament</h1>
+    </div>
+</header>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Loop for schedule starts here -->
+            {% for week_num in range(schedule|length) %}
+            <!-- A new form for each week -->
+            <form action="{{ url_for('update_score') }}" method="POST">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Player Home</th>
+                        <th>Player Away</th>
+                        <th>Score Home</th>
+                        <th>Score Away</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <!-- Loop for matches in the week -->
+                    {% for match in schedule[week_num] %}
+                    <tr>
+                        <td>{{ week_num + 1 }}</td> <!-- Week number -->
+                        <td>{{ match[0][0] }}</td> <!-- Player home -->
+                        <td>{{ match[0][1] }}</td> <!-- Player away -->
+                        <td><input type="text" class="form-control" placeholder="Score"
+                                   name="score_home_{{ week_num }}_{{ loop.index0 }}"></td>
+                        <td><input type="text" class="form-control" placeholder="Score"
+                                   name="score_away_{{ week_num }}_{{ loop.index0 }}"></td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                <button class="btn btn-primary mt-2" type="submit">Update Score</button>
+            </form>
+            <hr> <!-- A separator line between weeks -->
+
+            {% endfor %}
+            <!-- Loop for schedule ends here -->
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4 shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-success">Competition Standings</h2>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Handicap</th>
+                            <th>Points</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Loop for player standings starts here -->
+                        {% for player in standings %}
+                        <tr>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.handicap }}</td>
+                            <td>{{ player.score }}</td>
+                        </tr>
+                        {% endfor %}
+                        <!-- Loop for player standings ends here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
