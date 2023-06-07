@@ -108,4 +108,4 @@ def update_standings(player_name, points):
 
 
 if __name__ == '__main__':
-    app.run(port=5051)
+    app.run(port=5071)
