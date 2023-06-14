@@ -21,6 +21,7 @@ def home():
 
     return render_template('home.html', players=players)
 
+
 @app.route('/generate-competition')
 def generate_competition():
     global schedule
